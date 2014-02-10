@@ -24,6 +24,13 @@
 		18E67ECA17057D9000DFAD63 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18E67EC917057D9000DFAD63 /* Default-568h@2x.png */; };
 		18E67ECD17057D9000DFAD63 /* SendMessageToWeiboViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E67ECC17057D9000DFAD63 /* SendMessageToWeiboViewController.m */; };
 		18E7DE5F17096B630026CCED /* ProvideMessageForWeiboViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E7DE5E17096B630026CCED /* ProvideMessageForWeiboViewController.m */; };
+		8B9195CD18A8B6AA00697C88 /* ASWeiboSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B9195CC18A8B6AA00697C88 /* ASWeiboSDK.m */; };
+		8B9195D218A8D7BF00697C88 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B9195D118A8D7BF00697C88 /* SFHFKeychainUtils.m */; };
+		8B9195D618A8D83600697C88 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B9195D518A8D83600697C88 /* MobileCoreServices.framework */; };
+		8B9195D718A8D84E00697C88 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B9195D318A8D82100697C88 /* SystemConfiguration.framework */; };
+		8B9195D918A8D85E00697C88 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B9195D818A8D85E00697C88 /* Security.framework */; };
+		8B9195DD18A8D8F900697C88 /* WeiboDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B9195DB18A8D8F900697C88 /* WeiboDemoViewController.m */; };
+		8B9195DE18A8D8F900697C88 /* WeiboDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B9195DC18A8D8F900697C88 /* WeiboDemoViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +58,17 @@
 		18E67ECC17057D9000DFAD63 /* SendMessageToWeiboViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SendMessageToWeiboViewController.m; sourceTree = "<group>"; };
 		18E7DE5D17096B630026CCED /* ProvideMessageForWeiboViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProvideMessageForWeiboViewController.h; sourceTree = "<group>"; };
 		18E7DE5E17096B630026CCED /* ProvideMessageForWeiboViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProvideMessageForWeiboViewController.m; sourceTree = "<group>"; };
+		8B9195CB18A8B6AA00697C88 /* ASWeiboSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASWeiboSDK.h; sourceTree = "<group>"; };
+		8B9195CC18A8B6AA00697C88 /* ASWeiboSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASWeiboSDK.m; sourceTree = "<group>"; };
+		8B9195CE18A8D66800697C88 /* Bee_Singleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bee_Singleton.h; sourceTree = "<group>"; };
+		8B9195D018A8D7BF00697C88 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		8B9195D118A8D7BF00697C88 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
+		8B9195D318A8D82100697C88 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		8B9195D518A8D83600697C88 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		8B9195D818A8D85E00697C88 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		8B9195DA18A8D8F900697C88 /* WeiboDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiboDemoViewController.h; sourceTree = "<group>"; };
+		8B9195DB18A8D8F900697C88 /* WeiboDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiboDemoViewController.m; sourceTree = "<group>"; };
+		8B9195DC18A8D8F900697C88 /* WeiboDemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WeiboDemoViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +76,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B9195D918A8D85E00697C88 /* Security.framework in Frameworks */,
+				8B9195D718A8D84E00697C88 /* SystemConfiguration.framework in Frameworks */,
+				8B9195D618A8D83600697C88 /* MobileCoreServices.framework in Frameworks */,
 				18E67EB417057D9000DFAD63 /* UIKit.framework in Frameworks */,
 				18E67EB617057D9000DFAD63 /* Foundation.framework in Frameworks */,
 				18E67EB817057D9000DFAD63 /* CoreGraphics.framework in Frameworks */,
@@ -81,6 +102,10 @@
 		18E67EA717057D8F00DFAD63 = {
 			isa = PBXGroup;
 			children = (
+				8B9195CF18A8D7BF00697C88 /* SFHFKeychainUtils */,
+				8B9195CE18A8D66800697C88 /* Bee_Singleton.h */,
+				8B9195CB18A8B6AA00697C88 /* ASWeiboSDK.h */,
+				8B9195CC18A8B6AA00697C88 /* ASWeiboSDK.m */,
 				1858B4C5170BD256004F674A /* libWeiboSDK */,
 				18E67EB917057D9000DFAD63 /* WeiboSDKDemo */,
 				18E67EB217057D9000DFAD63 /* Frameworks */,
@@ -99,6 +124,9 @@
 		18E67EB217057D9000DFAD63 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8B9195D818A8D85E00697C88 /* Security.framework */,
+				8B9195D518A8D83600697C88 /* MobileCoreServices.framework */,
+				8B9195D318A8D82100697C88 /* SystemConfiguration.framework */,
 				18E67EB317057D9000DFAD63 /* UIKit.framework */,
 				18E67EB517057D9000DFAD63 /* Foundation.framework */,
 				18E67EB717057D9000DFAD63 /* CoreGraphics.framework */,
@@ -116,6 +144,9 @@
 				18E67EBA17057D9000DFAD63 /* Supporting Files */,
 				18E7DE5D17096B630026CCED /* ProvideMessageForWeiboViewController.h */,
 				18E7DE5E17096B630026CCED /* ProvideMessageForWeiboViewController.m */,
+				8B9195DA18A8D8F900697C88 /* WeiboDemoViewController.h */,
+				8B9195DB18A8D8F900697C88 /* WeiboDemoViewController.m */,
+				8B9195DC18A8D8F900697C88 /* WeiboDemoViewController.xib */,
 			);
 			path = WeiboSDKDemo;
 			sourceTree = "<group>";
@@ -136,6 +167,15 @@
 				18E67EC917057D9000DFAD63 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8B9195CF18A8D7BF00697C88 /* SFHFKeychainUtils */ = {
+			isa = PBXGroup;
+			children = (
+				8B9195D018A8D7BF00697C88 /* SFHFKeychainUtils.h */,
+				8B9195D118A8D7BF00697C88 /* SFHFKeychainUtils.m */,
+			);
+			path = SFHFKeychainUtils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -168,7 +208,7 @@
 				ORGANIZATIONNAME = "SINA iOS Team";
 				TargetAttributes = {
 					18E67EAF17057D8F00DFAD63 = {
-						DevelopmentTeam = 93KUUP9B5K;
+						DevelopmentTeam = V9LYQZXCT8;
 					};
 				};
 			};
@@ -194,6 +234,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B9195DE18A8D8F900697C88 /* WeiboDemoViewController.xib in Resources */,
 				18E67EBE17057D9000DFAD63 /* InfoPlist.strings in Resources */,
 				18E67EC617057D9000DFAD63 /* Default.png in Resources */,
 				18E67EC817057D9000DFAD63 /* Default@2x.png in Resources */,
@@ -213,9 +254,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B9195CD18A8B6AA00697C88 /* ASWeiboSDK.m in Sources */,
 				18E67EC017057D9000DFAD63 /* main.m in Sources */,
+				8B9195D218A8D7BF00697C88 /* SFHFKeychainUtils.m in Sources */,
 				18E67EC417057D9000DFAD63 /* AppDelegate.m in Sources */,
 				18E67ECD17057D9000DFAD63 /* SendMessageToWeiboViewController.m in Sources */,
+				8B9195DD18A8D8F900697C88 /* WeiboDemoViewController.m in Sources */,
 				18E7DE5F17096B630026CCED /* ProvideMessageForWeiboViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,7 +341,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WeiboSDKDemo/WeiboSDKDemo-Prefix.pch";
 				INFOPLIST_FILE = "WeiboSDKDemo/WeiboSDKDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/libWeiboSDK\"",
@@ -315,12 +359,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Sina.Com Technology (China) Co., Ltd.";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Sina.Com Technology (China) Co., Ltd.";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WeiboSDKDemo/WeiboSDKDemo-Prefix.pch";
 				INFOPLIST_FILE = "WeiboSDKDemo/WeiboSDKDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/libWeiboSDK\"",
