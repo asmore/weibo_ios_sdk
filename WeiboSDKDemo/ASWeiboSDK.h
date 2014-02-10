@@ -100,6 +100,8 @@ typedef enum
     
     WBHttpRequest       *request;
     WBAuthorizeRequest  *authorize;
+    
+    NSDictionary        *weiboUserInfo;
 }
 
 @property (nonatomic, retain) NSString *appKey;
@@ -108,6 +110,9 @@ typedef enum
 @property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, assign) NSTimeInterval expireTime;
 @property (nonatomic, retain) NSDate *expirationDate;
+
+
+@property (nonatomic, retain) NSDictionary *weiboUserInfo;
 
 @property (nonatomic, retain) NSString *redirectURI;
 @property (nonatomic, assign) BOOL isUserExclusive;
@@ -165,6 +170,8 @@ AS_SINGLETON(ASWeiboSDK)
 - (void)sendWeiBoWithText:(NSString *)text
                     image:(UIImage *)image
                  userInfo:(NSDictionary*)userInfo;
+
+- (void)getWeiboUserInfo;
 
 @end
 

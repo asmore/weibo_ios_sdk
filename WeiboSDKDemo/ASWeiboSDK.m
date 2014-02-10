@@ -7,7 +7,9 @@
 //
 
 #import "ASWeiboSDK.h"
+
 #import "SFHFKeychainUtils.h"
+#import "JSONKit.h"
 
 #define kWBURLSchemePrefix              @"WB_"
 
@@ -33,6 +35,8 @@
 @synthesize accessToken;
 @synthesize expireTime;
 @synthesize expirationDate;
+
+@synthesize weiboUserInfo;
 
 @synthesize redirectURI;
 @synthesize isUserExclusive;
@@ -112,8 +116,41 @@ DEF_SINGLETON(ASWeiboSDK)
 
 #pragma mark - WBHttpRequestDelegate
 
+- (id)parseJSONData:(NSData *)data error:(NSError **)error
+{
+    NSError *parseError = nil;
+	id result =[data objectFromJSONDataWithParseOptions:JKParseOptionStrict error:&parseError];
+	
+	if (parseError && (error != nil))
+    {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                  parseError, @"error",
+                                  @"Data parse error", NSLocalizedDescriptionKey, nil];
+        *error = [self errorWithCode:kWBSDKErrorCodeParseError
+                            userInfo:userInfo];
+	}
+	
+	return result;
+}
+
+- (id)errorWithCode:(NSInteger)code userInfo:(NSDictionary *)userInfo
+{
+    return [NSError errorWithDomain:kWBSDKErrorDomain code:code userInfo:userInfo];
+}
+
 - (void)request:(WBHttpRequest *)_request didFinishLoadingWithResult:(NSString *)result
 {
+	NSError *error = nil;
+	id resultDic = [self parseJSONData:[result dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+	
+	if (error)
+	{
+		[self request:_request didFailWithError:error];
+        return;
+	}
+    
+    NSLog(@"resultDic :%@",resultDic);
+    
     NSString *title = nil;
     UIAlertView *alert = nil;
     
@@ -133,6 +170,10 @@ DEF_SINGLETON(ASWeiboSDK)
         [alertView show];
         [alertView release];
 
+    }
+    if ([_request.url hasSuffix:@"users/show.json"])
+    {
+        self.weiboUserInfo = resultDic;
     }
     else
     {
@@ -403,4 +444,17 @@ DEF_SINGLETON(ASWeiboSDK)
                                  params:params];
     }
 }
+
+- (void)getWeiboUserInfo
+{
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:2];
+    
+    [params setObject:self.userID forKey:@"uid"];
+    
+    [self loadRequestWithMethodName:@"users/show.json"
+                         httpMethod:@"GET"
+                             params:params];
+}
+
+
 @end

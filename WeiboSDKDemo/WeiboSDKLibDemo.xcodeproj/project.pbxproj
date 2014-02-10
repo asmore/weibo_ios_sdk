@@ -31,6 +31,7 @@
 		8B9195D918A8D85E00697C88 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B9195D818A8D85E00697C88 /* Security.framework */; };
 		8B9195DD18A8D8F900697C88 /* WeiboDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B9195DB18A8D8F900697C88 /* WeiboDemoViewController.m */; };
 		8B9195DE18A8D8F900697C88 /* WeiboDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B9195DC18A8D8F900697C88 /* WeiboDemoViewController.xib */; };
+		8B9195E218A8F0B200697C88 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B9195E118A8F0B200697C88 /* JSONKit.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,8 @@
 		8B9195DA18A8D8F900697C88 /* WeiboDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiboDemoViewController.h; sourceTree = "<group>"; };
 		8B9195DB18A8D8F900697C88 /* WeiboDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiboDemoViewController.m; sourceTree = "<group>"; };
 		8B9195DC18A8D8F900697C88 /* WeiboDemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WeiboDemoViewController.xib; sourceTree = "<group>"; };
+		8B9195E018A8F0B200697C88 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		8B9195E118A8F0B200697C88 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +105,7 @@
 		18E67EA717057D8F00DFAD63 = {
 			isa = PBXGroup;
 			children = (
+				8B9195DF18A8F0B200697C88 /* JSONKit */,
 				8B9195CF18A8D7BF00697C88 /* SFHFKeychainUtils */,
 				8B9195CE18A8D66800697C88 /* Bee_Singleton.h */,
 				8B9195CB18A8B6AA00697C88 /* ASWeiboSDK.h */,
@@ -176,6 +180,15 @@
 				8B9195D118A8D7BF00697C88 /* SFHFKeychainUtils.m */,
 			);
 			path = SFHFKeychainUtils;
+			sourceTree = "<group>";
+		};
+		8B9195DF18A8F0B200697C88 /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				8B9195E018A8F0B200697C88 /* JSONKit.h */,
+				8B9195E118A8F0B200697C88 /* JSONKit.m */,
+			);
+			path = JSONKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,6 +273,7 @@
 				18E67EC417057D9000DFAD63 /* AppDelegate.m in Sources */,
 				18E67ECD17057D9000DFAD63 /* SendMessageToWeiboViewController.m in Sources */,
 				8B9195DD18A8D8F900697C88 /* WeiboDemoViewController.m in Sources */,
+				8B9195E218A8F0B200697C88 /* JSONKit.m in Sources */,
 				18E7DE5F17096B630026CCED /* ProvideMessageForWeiboViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

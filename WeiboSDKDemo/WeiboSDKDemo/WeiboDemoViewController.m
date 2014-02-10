@@ -55,11 +55,11 @@
     ssoButton.frame = CGRectMake(20, 250, 280, 50);
     [self.view addSubview:ssoButton];
     
-//    UIButton *inviteFriendButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [inviteFriendButton setTitle:@"邀请好友" forState:UIControlStateNormal];
-//    [inviteFriendButton addTarget:self action:@selector(inviteFriendButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-//    inviteFriendButton.frame = CGRectMake(20, 370, 280, 50);
-//    [self.view addSubview:inviteFriendButton];
+    UIButton *inviteFriendButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [inviteFriendButton setTitle:@"用户信息" forState:UIControlStateNormal];
+    [inviteFriendButton addTarget:self action:@selector(inviteFriendButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    inviteFriendButton.frame = CGRectMake(20, 370, 280, 50);
+    [self.view addSubview:inviteFriendButton];
     
     UIButton *ssoOutButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [ssoOutButton setTitle:@"登出" forState:UIControlStateNormal];
@@ -187,4 +187,10 @@
     [weiboSDK logOut];
 }
 
+- (void)inviteFriendButtonPressed
+{
+
+    [weiboSDK getWeiboUserInfo];
+    
+}
 @end
