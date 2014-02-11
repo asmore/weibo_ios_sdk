@@ -1,3 +1,24 @@
+因为项目中需要用到“应用内”发微博，在原有官方的SDK基础之上，
+
+添加了一个单例类：ASWeiboSDK，做了一点简单的封装
+
+1.在AppDelegate.m 中接管原有WeiboSDK的工作; 
+2.将授权信息保存在keychain中；
+3.添加了2个方法
+
+//发微博
+- (void)sendWeiBoWithText:(NSString *)text
+                    image:(UIImage *)image
+                 userInfo:(NSDictionary*)userInfo;
+
+//获取用户信息
+- (void)getWeiboUserInfo;
+
+
+使用方法详见：WeiboDemoViewController.m
+
+///////////////////////////////////////////////////
+
 # ReadMe
 为了方便第三方开发者快速集成微博 SDK，我们提供了以下联系方式，协助开发者进行集成：  
 **QQ群：284084420（此群已满）**
