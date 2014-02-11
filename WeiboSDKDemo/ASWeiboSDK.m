@@ -39,7 +39,7 @@
 @synthesize weiboUserInfo;
 
 @synthesize redirectURI;
-@synthesize isUserExclusive;
+//@synthesize isUserExclusive;
 @synthesize request;
 @synthesize authorize;
 @synthesize delegate;
@@ -93,6 +93,8 @@ DEF_SINGLETON(ASWeiboSDK)
     }
     else if ([response isKindOfClass:WBAuthorizeResponse.class])
     {
+        
+#ifdef DEBUG
         NSString *title = @"认证结果";
         NSString *message = [NSString stringWithFormat:@"响应状态: %d\nresponse.userId: %@\nresponse.accessToken: %@\n响应UserInfo数据: %@\n原请求UserInfo数据: %@",(int)response.statusCode,[(WBAuthorizeResponse *)response userID], [(WBAuthorizeResponse *)response accessToken], response.userInfo, response.requestUserInfo];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
@@ -101,6 +103,11 @@ DEF_SINGLETON(ASWeiboSDK)
                                               cancelButtonTitle:@"确定"
                                               otherButtonTitles:nil];
         
+        [alert show];
+        [alert release];
+#endif
+        
+        
         self.accessToken = [(WBAuthorizeResponse *)response accessToken];
         self.userID = [(WBAuthorizeResponse *)response userID];
         self.expirationDate = [(WBAuthorizeResponse *)response expirationDate];
@@ -108,8 +115,11 @@ DEF_SINGLETON(ASWeiboSDK)
         
         [self saveAuthorizeDataToKeychain];
         
-        [alert show];
-        [alert release];
+        
+        if ([delegate respondsToSelector:@selector(sinaweiboDidLogIn:)])
+        {
+            [delegate sinaweiboDidLogIn:self];
+        }
     }
 }
 
@@ -138,56 +148,6 @@ DEF_SINGLETON(ASWeiboSDK)
     return [NSError errorWithDomain:kWBSDKErrorDomain code:code userInfo:userInfo];
 }
 
-- (void)request:(WBHttpRequest *)_request didFinishLoadingWithResult:(NSString *)result
-{
-	NSError *error = nil;
-	id resultDic = [self parseJSONData:[result dataUsingEncoding:NSUTF8StringEncoding] error:&error];
-	
-	if (error)
-	{
-		[self request:_request didFailWithError:error];
-        return;
-	}
-    
-    NSLog(@"resultDic :%@",resultDic);
-    
-    NSString *title = nil;
-    UIAlertView *alert = nil;
-    
-    if ([_request.url hasSuffix:@"statuses/update.json"])
-    {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Alert"
-                                                            message:[NSString stringWithFormat:@"Post status \"%@\" succeed!", result]
-                                                           delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alertView show];
-        [alertView release];
-    }
-    else if ([_request.url hasSuffix:@"statuses/upload.json"])
-    {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Alert"
-                                                            message:[NSString stringWithFormat:@"Post image status \"%@\" succeed!", result]
-                                                           delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alertView show];
-        [alertView release];
-
-    }
-    if ([_request.url hasSuffix:@"users/show.json"])
-    {
-        self.weiboUserInfo = resultDic;
-    }
-    else
-    {
-    
-        title = @"收到网络回调";
-        alert = [[UIAlertView alloc] initWithTitle:title
-                                           message:[NSString stringWithFormat:@"%@",result]
-                                          delegate:nil
-                                 cancelButtonTitle:@"确定"
-                                 otherButtonTitles:nil];
-        [alert show];
-        [alert release];
-    }
-}
 
 - (void)request:(WBHttpRequest *)request didFailWithError:(NSError *)error;
 {
@@ -202,8 +162,78 @@ DEF_SINGLETON(ASWeiboSDK)
                              otherButtonTitles:nil];
     [alert show];
     [alert release];
+    
+    if ([delegate respondsToSelector:@selector(sinaweibo:requestDidFailWithError:)])
+    {
+        [delegate sinaweibo:self requestDidFailWithError:error];
+    }
 }
 
+
+- (void)request:(WBHttpRequest *)_request didFinishLoadingWithResult:(NSString *)result
+{
+	NSError *error = nil;
+	id resultDic = [self parseJSONData:[result dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+
+	if (error)
+	{
+		[self request:_request didFailWithError:error];
+        return;
+	}
+    
+#ifdef DEBUG
+    NSLog(@"resultDic :%@",resultDic);
+#endif
+    
+    if ([_request.url hasSuffix:@"statuses/update.json"])
+    {
+        [self sendWeiboSucceed:resultDic];
+    }
+    else if ([_request.url hasSuffix:@"statuses/upload.json"])
+    {
+        [self sendWeiboSucceed:resultDic];
+
+    }
+    if ([_request.url hasSuffix:@"users/show.json"])
+    {
+        self.weiboUserInfo = resultDic;
+        
+        [self getUserInfoSucceed:resultDic];
+    }
+    if ([_request.url hasSuffix:@"/revokeoauth2"])
+    {
+        
+        if ([delegate respondsToSelector:@selector(sinaweiboDidLogOut:)])
+        {
+            [delegate sinaweiboDidLogOut:self];
+        }
+
+    }
+    
+    else
+    {
+    
+#ifdef DEBUG
+        NSString *title = nil;
+        UIAlertView *alert = nil;
+        
+        title = @"收到网络回调";
+        alert = [[UIAlertView alloc] initWithTitle:title
+                                           message:[NSString stringWithFormat:@"%@",result]
+                                          delegate:nil
+                                 cancelButtonTitle:@"确定"
+                                 otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+#endif
+        
+        if ([delegate respondsToSelector:@selector(sinaweibo:requestDidSucceedWithResult:)])
+        {
+            [delegate sinaweibo:self requestDidSucceedWithResult:result];
+        }
+    }
+
+}
 
 
 #pragma mark - ASWeiboSDK Life Circle
@@ -257,8 +287,75 @@ DEF_SINGLETON(ASWeiboSDK)
     [super dealloc];
 }
 
+#pragma mark - Validation
 
-#pragma mark - WBEngine Private Methods
+/**
+ * @description 判断是否登录
+ * @return YES为已登录；NO为未登录
+ */
+- (BOOL)isLoggedIn
+{
+    //    return userID && accessToken && refreshToken;
+    //return userID && accessToken && (expireTime > 0);
+    return userID && accessToken;
+}
+/**
+ * @description 判断登录是否过期
+ * @return YES为已过期；NO为未为期
+ */
+- (BOOL)isAuthorizeExpired
+{
+    if (expireTime == 0) {
+        return YES;
+    }
+    if ([[NSDate date] timeIntervalSince1970] > expireTime)
+    {
+        // force to log out
+        [self deleteAuthorizeDataInKeychain];
+        return YES;
+    }
+    return NO;
+}
+
+/**
+ * @description 判断登录是否有效，当已登录并且登录未过期时为有效状态
+ * @return YES为有效；NO为无效
+ */
+- (BOOL)isAuthValid
+{
+    return ([self isLoggedIn] && ![self isAuthorizeExpired]);
+}
+
+
+- (void)notifyTokenExpired:(id<WBHttpRequestDelegate>)requestDelegate
+{
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                              @"Token expired", NSLocalizedDescriptionKey, nil];
+    
+    NSError *error = [NSError errorWithDomain:kSinaWeiboSDKErrorDomain
+                                         code:21315
+                                     userInfo:userInfo];
+    
+    if ([delegate respondsToSelector:@selector(sinaweibo:accessTokenInvalidOrExpired:)])
+    {
+        [delegate sinaweibo:self accessTokenInvalidOrExpired:error];
+    }
+    
+    if ([requestDelegate respondsToSelector:@selector(request:didFailWithError:)])
+	{
+		[requestDelegate request:nil didFailWithError:error];
+	}
+}
+
+- (void)requestDidFailWithInvalidToken:(NSError *)error
+{
+    if ([delegate respondsToSelector:@selector(sinaweibo:accessTokenInvalidOrExpired:)])
+    {
+        [delegate sinaweibo:self accessTokenInvalidOrExpired:error];
+    }
+}
+
+#pragma mark - Private Methods
 
 - (NSString *)urlSchemeString
 {
@@ -299,15 +396,11 @@ DEF_SINGLETON(ASWeiboSDK)
 
 - (void)logIn
 {
-    if ([self isLoggedIn])
+    if ([self isAuthValid])
     {
-        if ([delegate respondsToSelector:@selector(engineAlreadyLoggedIn:)])
+        if ([delegate respondsToSelector:@selector(sinaweiboDidLogIn:)])
         {
-            [delegate engineAlreadyLoggedIn:self];
-        }
-        if (isUserExclusive)
-        {
-            return;
+            [delegate sinaweiboDidLogIn:self];
         }
     }
     
@@ -315,70 +408,48 @@ DEF_SINGLETON(ASWeiboSDK)
     _request.redirectURI = kRedirectURI;
     _request.scope = @"all";
     [WeiboSDK sendRequest:_request];
-    
-//    WBAuthorize *auth = [[WBAuthorize alloc] initWithAppKey:appKey appSecret:appSecret];
-//    [auth setRootViewController:rootViewController];
-//    [auth setDelegate:self];
-//    self.authorize = auth;
-//    [auth release];
-//    
-//    if ([redirectURI length] > 0)
-//    {
-//        [authorize setRedirectURI:redirectURI];
-//    }
-//    else
-//    {
-//        [authorize setRedirectURI:@"http://"];
-//    }
-//    
-//    [authorize startAuthorize];
 }
 
 - (void)logOut
 {
-    //AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
     [WeiboSDK logOutWithToken:accessToken delegate:self withTag:@"user1"];
+    [self deleteAuthorizeDataInKeychain];
 }
-
-
-- (BOOL)isLoggedIn
-{
-    //    return userID && accessToken && refreshToken;
-    //return userID && accessToken && (expireTime > 0);
-    return userID && accessToken && ![self isAuthorizeExpired];
-}
-
-- (BOOL)isAuthorizeExpired
-{
-    if (expireTime == 0) {
-        return YES;
-    }
-    if ([[NSDate date] timeIntervalSince1970] > expireTime)
-    {
-        // force to log out
-        [self deleteAuthorizeDataInKeychain];
-        return YES;
-    }
-    return NO;
-}
-
-
 
 #pragma mark Request
 - (void)requestWithURL:(NSString *)url
                  params:(NSMutableDictionary *)params
              httpMethod:(NSString *)httpMethod
-               delegate:(id<WBHttpRequestDelegate>)delegate
+               delegate:(id<WBHttpRequestDelegate>)_delegate
 {
-    [request disconnect];
-    //NSString *url = [NSString stringWithFormat:@"%@%@", kWBSDKAPIDomain, methodName];
+    if (params == nil)
+    {
+        params = [NSMutableDictionary dictionary];
+    }
     
-    self.request = [WBHttpRequest requestWithAccessToken:accessToken
-                                                     url:url
-                                              httpMethod:httpMethod
-                                                  params:params
-                                                delegate:self
-                                                 withTag:@"user1"];
+    if ([self isAuthValid])
+    {
+    
+    
+        [request disconnect];
+        //NSString *url = [NSString stringWithFormat:@"%@%@", kWBSDKAPIDomain, methodName];
+        
+        self.request = [WBHttpRequest requestWithAccessToken:accessToken
+                                                         url:url
+                                                  httpMethod:httpMethod
+                                                      params:params
+                                                    delegate:self
+                                                     withTag:@"user1"];
+    }
+    else
+    {
+        //notify token expired in next runloop
+        [self performSelectorOnMainThread:@selector(notifyTokenExpired:)
+                               withObject:_delegate
+                            waitUntilDone:NO];
+        
+        return;
+    }
     
 }
 
@@ -387,27 +458,14 @@ DEF_SINGLETON(ASWeiboSDK)
                        httpMethod:(NSString *)httpMethod
                            params:(NSDictionary *)params
 {
-    // Step 1.
-    // Check if the user has been logged in.
-	if (![self isLoggedIn])
+	if (![self isAuthValid])
 	{
-        if ([delegate respondsToSelector:@selector(engineNotAuthorized:)])
-        {
-            [delegate engineNotAuthorized:self];
-        }
+        //notify token expired in next runloop
+        [self performSelectorOnMainThread:@selector(notifyTokenExpired:)
+                               withObject:nil
+                            waitUntilDone:NO];
         return;
 	}
-    
-	// Step 2.
-    // Check if the access token is expired.
-    if ([self isAuthorizeExpired])
-    {
-        if ([delegate respondsToSelector:@selector(engineAuthorizeExpired:)])
-        {
-            [delegate engineAuthorizeExpired:self];
-        }
-        return;
-    }
     
     [request disconnect];
     NSString *url = [NSString stringWithFormat:@"%@%@", kWBSDKAPIDomain, methodName];
@@ -420,6 +478,9 @@ DEF_SINGLETON(ASWeiboSDK)
                                                   withTag:@"user1"];
     
 }
+
+
+#pragma mark - weibo open API 接口
 
 - (void)sendWeiBoWithText:(NSString *)text
                     image:(UIImage *)image
@@ -445,16 +506,48 @@ DEF_SINGLETON(ASWeiboSDK)
     }
 }
 
+
 - (void)getWeiboUserInfo
-{
+{    
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:2];
     
-    [params setObject:self.userID forKey:@"uid"];
+    if (self.userID) {
+        [params setObject:self.userID forKey:@"uid"];
+    }
     
     [self loadRequestWithMethodName:@"users/show.json"
                          httpMethod:@"GET"
                              params:params];
 }
+
+
+
+
+- (void)sendWeiboSucceed:(id)result
+{
+#ifdef DEBUG
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Alert"
+                                                        message:[NSString stringWithFormat:@"Post status \"%@\" succeed!", result]
+                                                       delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+    [alertView show];
+    [alertView release];
+#endif
+    
+    if ([delegate respondsToSelector:@selector(sinaweibo:sendWeiboSucceedWithResult:)])
+    {
+        [delegate sinaweibo:self sendWeiboSucceedWithResult:result];
+    }
+    
+}
+
+- (void)getUserInfoSucceed:(id)result
+{
+    if ([delegate respondsToSelector:@selector(sinaweibo:getUserInfoSucceedWithResult:)])
+    {
+        [delegate sinaweibo:self getUserInfoSucceedWithResult:result];
+    }
+}
+
 
 
 @end

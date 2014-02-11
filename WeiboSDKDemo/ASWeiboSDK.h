@@ -11,19 +11,14 @@
 #import "WeiboSDK.h"
 #import "Bee_Singleton.h"
 
-typedef void (^requestBlock)();
-typedef enum
-{
-    kWBRequestPostDataTypeNone,
-	kWBRequestPostDataTypeNormal,			// for normal data post, such as "user=name&password=psd"
-	kWBRequestPostDataTypeMultipart,        // for uploading images and files.
-}WBRequestPostDataType;
-
-
 #define kWBSDKErrorDomain           @"WeiBoSDKErrorDomain"
 #define kWBSDKErrorCodeKey          @"WeiBoSDKErrorCodeKey"
 
 #define kWBSDKAPIDomain             @"https://api.weibo.com/2/"
+
+
+#define kSinaWeiboSDKErrorDomain    kWBSDKErrorDomain     // @"SinaWeiboSDKErrorDomain"
+#define kSinaWeiboSDKErrorCodeKey   kWBSDKErrorCodeKey    // @"SinaWeiboSDKErrorCodeKey"
 
 typedef enum
 {
@@ -39,46 +34,32 @@ typedef enum
 	kWBSDKErrorCodeAuthorizeError	= 203,
 }WBSDKErrorCode;
 
-
-
-
-
 @class ASWeiboSDK;
 @protocol SinaWeiboDelegate;
 
-@protocol ASWeiboSDKDelegate <NSObject>
+/**
+ * @description 第三方应用需实现此协议，登录时传入此类对象，用于完成登录结果的回调
+ */
+@protocol SinaWeiboDelegate <NSObject>
 
 @optional
 
-// If you try to log in with logIn or logInUsingUserID method, and
-// there is already some authorization info in the Keychain,
-// this method will be invoked.
-// You may or may not be allowed to continue your authorization,
-// which depends on the value of isUserExclusive.
-- (void)engineAlreadyLoggedIn:(ASWeiboSDK *)engine;
+- (void)sinaweiboDidLogIn:(ASWeiboSDK *)sinaweibo;
+- (void)sinaweiboDidLogOut:(ASWeiboSDK *)sinaweibo;
+- (void)sinaweiboLogInDidCancel:(ASWeiboSDK *)sinaweibo;
 
-// Log in successfully.
-- (void)engineDidLogIn:(ASWeiboSDK *)engine;
+- (void)sinaweibo:(ASWeiboSDK *)sinaweibo logInDidFailWithError:(NSError *)error;
+- (void)sinaweibo:(ASWeiboSDK *)sinaweibo accessTokenInvalidOrExpired:(NSError *)error;
 
-// Failed to log in.
-// Possible reasons are:
-// 1) Either username or password is wrong;
-// 2) Your app has not been authorized by Sina yet.
-- (void)engine:(ASWeiboSDK *)engine didFailToLogInWithError:(NSError *)error;
+- (void)sinaweibo:(ASWeiboSDK *)sinaweibo requestDidFailWithError:(NSError *)error;
+- (void)sinaweibo:(ASWeiboSDK *)sinaweibo requestDidSucceedWithResult:(id)result;
 
-// Log out successfully.
-- (void)engineDidLogOut:(ASWeiboSDK *)engine;
 
-// When you use the WBEngine's request methods,
-// you may receive the following four callbacks.
-- (void)engineNotAuthorized:(ASWeiboSDK *)engine;
-- (void)engineAuthorizeExpired:(ASWeiboSDK *)engine;
-
-- (void)engine:(ASWeiboSDK *)engine requestDidFailWithError:(NSError *)error;
-- (void)engine:(ASWeiboSDK *)engine requestDidSucceedWithResult:(id)result;
+@optional
+- (void)sinaweibo:(ASWeiboSDK *)sinaweibo sendWeiboSucceedWithResult:(id)result;
+- (void)sinaweibo:(ASWeiboSDK *)sinaweibo getUserInfoSucceedWithResult:(id)result;
 
 @end
-
 
 @interface ASWeiboSDK : NSObject
 {
@@ -92,11 +73,7 @@ typedef enum
     
     NSString        *redirectURI;
     
-    // Determine whether user must log out before another logging in.
-    BOOL            isUserExclusive;
-    
-    id<ASWeiboSDKDelegate> delegate;
-    
+    id<SinaWeiboDelegate> delegate;
     
     WBHttpRequest       *request;
     WBAuthorizeRequest  *authorize;
@@ -115,9 +92,8 @@ typedef enum
 @property (nonatomic, retain) NSDictionary *weiboUserInfo;
 
 @property (nonatomic, retain) NSString *redirectURI;
-@property (nonatomic, assign) BOOL isUserExclusive;
 
-@property (nonatomic, assign) id<ASWeiboSDKDelegate> delegate;
+@property (nonatomic, assign) id<SinaWeiboDelegate> delegate;
 
 @property (nonatomic, retain) WBHttpRequest *request;
 @property (nonatomic, retain) WBAuthorizeRequest *authorize;
@@ -171,22 +147,9 @@ AS_SINGLETON(ASWeiboSDK)
                     image:(UIImage *)image
                  userInfo:(NSDictionary*)userInfo;
 
+//获取用户信息
 - (void)getWeiboUserInfo;
 
 @end
 
-/**
- * @description 第三方应用需实现此协议，登录时传入此类对象，用于完成登录结果的回调
- */
-@protocol SinaWeiboDelegate <NSObject>
-
-@optional
-
-- (void)sinaweiboDidLogIn:(ASWeiboSDK *)sinaweibo;
-- (void)sinaweiboDidLogOut:(ASWeiboSDK *)sinaweibo;
-- (void)sinaweiboLogInDidCancel:(ASWeiboSDK *)sinaweibo;
-- (void)sinaweibo:(ASWeiboSDK *)sinaweibo logInDidFailWithError:(NSError *)error;
-- (void)sinaweibo:(ASWeiboSDK *)sinaweibo accessTokenInvalidOrExpired:(NSError *)error;
-
-@end
 
