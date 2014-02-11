@@ -13,4 +13,9 @@
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UIButton *shareButton;
 
+
+@property (nonatomic, retain) UIButton *ssoButton;
+@property (nonatomic, retain) UIButton *ssoOutButton;
+@property (nonatomic, retain) UIButton *inviteFriendButton;
+
 @end

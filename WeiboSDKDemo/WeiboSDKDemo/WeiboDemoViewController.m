@@ -10,7 +10,7 @@
 
 #import "ASWeiboSDK.h"
 
-@interface WeiboDemoViewController ()
+@interface WeiboDemoViewController () <SinaWeiboDelegate>
 {
     ASWeiboSDK  *weiboSDK;
 }
@@ -30,6 +30,10 @@
 @synthesize titleLabel;
 @synthesize shareButton;
 
+@synthesize ssoButton;
+@synthesize ssoOutButton;
+@synthesize inviteFriendButton;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -46,27 +50,28 @@
     
     
     weiboSDK = [ASWeiboSDK sharedInstance];
+    weiboSDK.delegate = self;
     
     [self shareMessage];
     
-    UIButton *ssoButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    self.ssoButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [ssoButton setTitle:@"请求微博认证（SSO授权）" forState:UIControlStateNormal];
     [ssoButton addTarget:self action:@selector(ssoButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     ssoButton.frame = CGRectMake(20, 250, 280, 50);
     [self.view addSubview:ssoButton];
     
-    UIButton *inviteFriendButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [inviteFriendButton setTitle:@"用户信息" forState:UIControlStateNormal];
-    [inviteFriendButton addTarget:self action:@selector(inviteFriendButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    inviteFriendButton.frame = CGRectMake(20, 370, 280, 50);
-    [self.view addSubview:inviteFriendButton];
-    
-    UIButton *ssoOutButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    self.ssoOutButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [ssoOutButton setTitle:@"登出" forState:UIControlStateNormal];
     [ssoOutButton addTarget:self action:@selector(ssoOutButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     ssoOutButton.frame = CGRectMake(20, 300, 280, 50);
     [self.view addSubview:ssoOutButton];
     
+    
+    self.inviteFriendButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [inviteFriendButton setTitle:@"用户信息" forState:UIControlStateNormal];
+    [inviteFriendButton addTarget:self action:@selector(inviteFriendButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    inviteFriendButton.frame = CGRectMake(20, 370, 280, 50);
+    [self.view addSubview:inviteFriendButton];
     
     [self.shareButton setTitle:@"分享消息到微博" forState:UIControlStateNormal];
     self.titleLabel.text = @"第三方应用主动发送消息给微博";
@@ -192,5 +197,27 @@
 
     [weiboSDK getWeiboUserInfo];
     
+}
+
+#pragma mark - SinaWeiboDelegate
+- (void)sinaweiboDidLogIn:(ASWeiboSDK *)sinaweibo
+{
+    
+}
+
+- (void)sinaweiboDidLogOut:(ASWeiboSDK *)sinaweibo
+{
+
+    [inviteFriendButton setTitle:@"用户信息" forState:UIControlStateNormal];
+
+}
+
+- (void)sinaweibo:(ASWeiboSDK *)sinaweibo getUserInfoSucceedWithResult:(id)result
+{
+    
+    NSString *username = [result valueForKey:@"screen_name"];
+    NSLog(@"%@",username);
+    
+    [inviteFriendButton setTitle:[NSString stringWithFormat:@"用户：%@",username] forState:UIControlStateNormal];
 }
 @end
